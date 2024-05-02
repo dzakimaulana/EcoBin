@@ -15,31 +15,55 @@
 // char pass[] = "";
 
 /* --- Ultrasonic Sensor --- */
-void ultrasonicSensor(float *distanceCm);
 #define SOUND_VELOCITY 0.034
-#define TrigPin D6
-#define EchoPin D5
-long duration;
-float distanceCm;
+#define TPORG1 D6
+#define EPORG1 D5
+#define TPNON2 D8
+#define EPNON2 D7
+const int ultrasonicPinout[2][2] = {
+  {TPORG1, EPORG1},
+  {TPNON2, EPNON2},
+};
+struct fullnessLevel {
+  int organic;
+  int nonorganic;
+};
+void ultrasonicSensor(fullnessLevel* data);
+fullnessLevel fullVal;
+
+/* --- LCD Display --- */
+void lcdDisplay(fullnessLevel* data);
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 /* --- Motion Detector --- */
-int motionSensor = D2;
+// int motionSensor = D2;
 // bool motionDetector();
-unsigned long currentTime;
-const unsigned long motionCheckInterval = 200UL;
-unsigned long previousMotionCheckTime = 0;
+// unsigned long currentTime;
+// const unsigned long motionCheckInterval = 200UL;
+// unsigned long previousMotionCheckTime = 0;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(motionSensor, INPUT);
-  delay(1000);
-  Serial.println("Motion is set");
-  // put your setup code here, to run once:
-  pinMode(TrigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(EchoPin, INPUT);
+  while(!Serial);
 
+  // [*] Motion Sensor
+  // pinMode(motionSensor, INPUT);
+  
+  // [*] Ultrasonic Sensor
+  for (int i = 0; i < 2; i++) {
+    pinMode(ultrasonicPinout[i][0], OUTPUT);
+    pinMode(ultrasonicPinout[i][1], INPUT);
+  }
+
+  // [*] LCD Display
+  lcd.begin(16,2);
 }
 
 void loop() {
-  ultrasonicSensor(&distanceCm);
+  // ultrasonicSensor(&distanceCm);
+  fullVal.organic = random(10,70);
+  fullVal.nonorganic = random(10,70);
+  lcdDisplay(&fullVal);
+  delay(1000);
 }
