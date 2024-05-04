@@ -1,20 +1,11 @@
-// unsigned long currentTime;
-// const long motionCheckInterval = 1000;
-// unsigned long previousMotionCheckTime = 0;
-
-// bool motionDetector() {
-//   bool isDetected = false;
-//   currentTime = millis();
-
-//   if (currentTime - previousMotionCheckTime >= motionCheckInterval) {
-//     int isMotionDetected = digitalRead(motionSensor);
-
-//     if (isMotionDetected == 0) {
-//       isDetected = false;
-//     } else {
-//       isDetected = true;
+// void motionDetector() {
+//   long state = digitalRead(MS);
+//     if(state == HIGH) {
+//       Serial.println("[!] Motion detected");
+//       delay(200);
 //     }
-//     previousMotionCheckTime = currentTime;
-//   }
-//   return isDetected; // Return a default value if the condition is not met
+//     else {
+//       Serial.println("[!] Motion absent");
+//       delay(200);
+//     }
 // }

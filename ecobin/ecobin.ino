@@ -2,7 +2,6 @@
 // #include <BlynkSimpleEsp8266.h>
 #include <Arduino.h>
 
-
 /* Comment this out to disable prints and save space */
 // #define BLYNK_PRINT Serial
 /* Fill in information from Blynk Device Info here */
@@ -36,19 +35,41 @@ void lcdDisplay(fullnessLevel* data);
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-/* --- Motion Detector --- */
-// int motionSensor = D2;
-// bool motionDetector();
-// unsigned long currentTime;
-// const unsigned long motionCheckInterval = 200UL;
-// unsigned long previousMotionCheckTime = 0;
+/* --- Proximity --- */
+/* Infrared Sensor */
+const int infraSensor = 3;
+void infraredProximity();
+struct proximityDecision {
+  bool infrared;
+  bool capasitive;
+  bool inductive;
+};
 
+/* --- Motion Detector --- */
+// #define MS D0
+// void motionDetector();
+
+/* --- Motor Servo Proximty --- */
+#include <Servo.h>
+#define SPORG D3
+#define SPNON D4
+Servo servoOrg;
+Servo servoNon;
+void servoProximity(proximityDecision* data);
+
+/* --- Motor Servo Gate --- */
+// on process
+
+/* --- Setup --- */
 void setup() {
   Serial.begin(9600);
   while(!Serial);
 
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+
   // [*] Motion Sensor
-  // pinMode(motionSensor, INPUT);
+  // pinMode(MS, INPUT);
   
   // [*] Ultrasonic Sensor
   for (int i = 0; i < 2; i++) {
@@ -56,14 +77,24 @@ void setup() {
     pinMode(ultrasonicPinout[i][1], INPUT);
   }
 
+  // [*] infraredProximity
+  pinMode(infraSensor, INPUT);
+
+  // [*] Servo
+  servoOrg.attach(SPORG, 500, 2400);
+  servoNon.attach(SPNON, 500, 2400);
+
   // [*] LCD Display
-  lcd.begin(16,2);
+  lcd.init();
+  lcd.clear();
+  lcd.backlight(); 
 }
 
 void loop() {
-  // ultrasonicSensor(&distanceCm);
-  fullVal.organic = random(10,70);
-  fullVal.nonorganic = random(10,70);
-  lcdDisplay(&fullVal);
+  // ultrasonicSensor(&fullVal);
+  // lcdDisplay(&fullVal);
+  // motionDetector();
+  infraredProximity();
   delay(1000);
+  //servofunction();
 }

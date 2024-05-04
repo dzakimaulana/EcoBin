@@ -1,19 +1,29 @@
 void ultrasonicSensor(fullnessLevel* data) {
   
+  // -- Organic Field
   // Clears the trigPin
   digitalWrite(ultrasonicPinout[0][0], LOW);
-  digitalWrite(ultrasonicPinout[1][0], LOW);
   delayMicroseconds(2);
 
   // Sets the trigPin on HIGH state for 10 micro seconds
   digitalWrite(ultrasonicPinout[0][0], HIGH);
-  digitalWrite(ultrasonicPinout[1][0], HIGH);
   delayMicroseconds(10);
   digitalWrite(ultrasonicPinout[0][0], LOW);
-  digitalWrite(ultrasonicPinout[1][0], LOW);
 
   // Reads the echoPin, returns the sound wave travel time in microseconds
   long durationOrg = pulseIn(ultrasonicPinout[0][1], HIGH);
+
+  // -- Non Organic Field
+  // Clears the trigPin
+  digitalWrite(ultrasonicPinout[1][0], LOW);
+  delayMicroseconds(2);
+
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(ultrasonicPinout[1][0], HIGH);
+  delayMicroseconds(10);
+  digitalWrite(ultrasonicPinout[1][0], LOW);
+
+  // Reads the echoPin, returns the sound wave travel time in microseconds
   long durationNon = pulseIn(ultrasonicPinout[1][1], HIGH);
   
   // Calculate the distance
@@ -26,6 +36,8 @@ void ultrasonicSensor(fullnessLevel* data) {
 
   // Debugging
   Serial.printf("Organic Distance : %d cm\n", distanceOrg);
-  Serial.printf("Nonorganic Distance : %d cm\n", distanceOrg);
-  delay(1000);
+  Serial.printf("Nonorganic Distance : %d cm\n", distanceNon);
+  data->organic = distanceOrg;
+  data->nonorganic = distanceNon;
+  delay(500);
 }
