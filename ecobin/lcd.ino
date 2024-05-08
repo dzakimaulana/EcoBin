@@ -1,20 +1,23 @@
-void lcdDisplay(fullnessLevel* data) {
-
-  // Organic Field
-  char displayOrg[16];
-  snprintf(displayOrg, sizeof(displayOrg), "%-8s%6d%%", "Organic", data->organic);
+void lcdDisplay(int* data) {
+  // Top
   lcd.setCursor(0, 0);
-  lcd.print(displayOrg);
+  lcd.print("Fullness");
   delay(200);
 
-  // Non-Organic Field
-  char displayNon[16];
-  snprintf(displayNon, sizeof(displayNon), "%-8s%3d%%", "Non-Organic", data->nonorganic);
-  lcd.setCursor(0,1);
-  lcd.print(displayNon);
+  // Bottom
+  lcd.setCursor(0, 1);
+  lcd.print("(");
+  lbg.clearLine(2);
+  lbg.drawValue(*data, 100);
+  lcd.setCursor(11, 1);
+  lcd.print(")");
+  lcd.setCursor(12, 1);
+  lcd.printf("%3d%%", *data);
   delay(200);
 
   // Debugging
-  Serial.printf("[!] LCD Must Displayed\n");
+  Serial.println("[!] LCD Must Displayed");
   delay(500);
 }
+
+

@@ -1,43 +1,26 @@
-void ultrasonicSensor(fullnessLevel* data) {
+void ultrasonicSensor(int* data) {
   
   // -- Organic Field
   // Clears the trigPin
-  digitalWrite(ultrasonicPinout[0][0], LOW);
+  digitalWrite(TP, LOW);
   delayMicroseconds(2);
 
   // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(ultrasonicPinout[0][0], HIGH);
+  digitalWrite(TP, HIGH);
   delayMicroseconds(10);
-  digitalWrite(ultrasonicPinout[0][0], LOW);
+  digitalWrite(TP, LOW);
 
   // Reads the echoPin, returns the sound wave travel time in microseconds
-  long durationOrg = pulseIn(ultrasonicPinout[0][1], HIGH);
-
-  // -- Non Organic Field
-  // Clears the trigPin
-  digitalWrite(ultrasonicPinout[1][0], LOW);
-  delayMicroseconds(2);
-
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(ultrasonicPinout[1][0], HIGH);
-  delayMicroseconds(10);
-  digitalWrite(ultrasonicPinout[1][0], LOW);
-
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  long durationNon = pulseIn(ultrasonicPinout[1][1], HIGH);
+  long duration = pulseIn(EP, HIGH);
   
   // Calculate the distance
-  int distanceOrg = round(durationOrg * SOUND_VELOCITY/2);
-  int distanceNon = round(durationNon * SOUND_VELOCITY/2);
+  int distance = round(duration * SOUND_VELOCITY/2);
 
   // Fullness Level
-  // data.organic = map(distanceOrg, <max distance org>, <min distance org>, 0, 100);
-  // data.nonorganic = map(distanceNon, <max distance non>, <min distance non>, 0, 100);
+  *data = distance;
+  // *data = map(distanceOrg, <max distance org>, <min distance org>, 0, 100);
 
   // Debugging
-  Serial.printf("Organic Distance : %d cm\n", distanceOrg);
-  Serial.printf("Nonorganic Distance : %d cm\n", distanceNon);
-  data->organic = distanceOrg;
-  data->nonorganic = distanceNon;
+  Serial.printf("Distance : %d cm\n", distance);
   delay(500);
 }
