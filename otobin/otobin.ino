@@ -8,9 +8,9 @@ int fullnessLevel;
 void ultrasonicSensor(int* data);
 
 /* --- Blynk --- */
-#define BLYNK_TEMPLATE_ID "TMPL6PhvPdFQr"
-#define BLYNK_TEMPLATE_NAME "EcoBin"
-#define BLYNK_AUTH_TOKEN "CI1BH7djQFSoopUkqcieYTka0mLlXxFD"
+#define BLYNK_TEMPLATE_ID "xxxxxxxxxxxxx"
+#define BLYNK_TEMPLATE_NAME "xxxxxx"
+#define BLYNK_AUTH_TOKEN "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 #define BLYNK_PRINT Serial
 #include <BlynkSimpleEsp8266.h>
 char auth[] = BLYNK_AUTH_TOKEN;
@@ -29,17 +29,25 @@ void lcdDisplay(int* data);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 LcdBarGraphRobojax lbg(&lcd, 10, 1, 1);
 
+/* --- Sign --- */
+#define GREEN D7
+#define RED D8
 
 /* --- Infrared --- */
-// #define D0
-// void infraredProximity();
+#define IR D0
+bool detected = false;
+void infraredProximity(bool* det);
 
 /* --- Motor Servo Proximty --- */
 #include <Servo.h>
-#define SPORG D3
-#define SPNON D4
+#define SS D3
+int LOCK = 0;
+int MAN = 0;
 Servo servo;
-// void servoProximity(int* data);
+void servoSteering(bool* det, int* lock, int* manual);
+
+/* --- Pin Used --- */
+/* D0 (D1 D2) D3 (D5 D6) (D7 D8) */
 
 /* --- Setup --- */
 void setup() {
@@ -51,10 +59,14 @@ void setup() {
   pinMode(EP, INPUT);
 
   // [*] infraredProximity
-  // pinMode(infraSensor, INPUT);
+  pinMode(IR, INPUT);
 
   // [*] Servo
-  servo.attach(SPORG, 500, 2400);
+  servo.attach(SS, 500, 2400);
+
+  // [*] Sign
+  pinMode(GREEN, OUTPUT);
+  pinMode(RED, OUTPUT);
 
   // [*] LCD Display
   lcd.init();
@@ -70,8 +82,7 @@ void loop() {
   ultrasonicSensor(&fullnessLevel);
   lcdDisplay(&fullnessLevel);
   blynkMonitoring(&fullnessLevel);
-  // motionDetector();
-  // infraredProximity();
-  delay(1000);
-  //servofunction();
+  infraredProximity(&detected);
+  servoSteering(&detected, &LOCK, &MAN);
+  delay(500);
 }
