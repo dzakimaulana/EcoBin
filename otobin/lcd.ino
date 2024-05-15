@@ -17,7 +17,7 @@ void lcdDisplay(int* data) {
 
   // Debugging
   Serial.println("[!] LCD Must Displayed");
-  delay(500);
+  delay(200);
 }
 
 
