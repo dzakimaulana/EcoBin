@@ -12,14 +12,20 @@ void ultrasonicSensor(int* data, bool* det, int* man, int* lock_full) {
 
   // Reads the echoPin, returns the sound wave travel time in microseconds
   long duration = pulseIn(EP, HIGH);
+  float distance_long = duration * SOUND_VELOCITY/2;
   
   // Calculate the distance
-  // full = 17 cm : non-full = 51 cm
-  int distance = round(duration * SOUND_VELOCITY/2);
+  // full = 18 cm : non-full = 26 cm
+  int distance = round(distance_long);
+  if (distance > 26) {
+    distance = 26;
+  } else if (distance < 18) {
+    distance = 18;
+  }
 
   // Fullness Level
   // *data = distance;
-  int percentage = map(distance, 51, 17, 0, 100);
+  int percentage = map(distance, 26, 17, 0, 100);
   if (percentage < 0) {
     percentage = 0;
   }
@@ -31,7 +37,7 @@ void ultrasonicSensor(int* data, bool* det, int* man, int* lock_full) {
   *data = percentage;
 
   // Debugging
-  Serial.printf("[!] Distance : %d cm\n", distance);
+  Serial.printf("[!] Distance : %f cm\n", distance_long);
   Serial.printf("[!] Percentage : %d %\n", percentage);
   }
   delay(200);
